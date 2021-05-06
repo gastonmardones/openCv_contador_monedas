@@ -5,10 +5,18 @@ import numpy as np
 valorGauss = 5   # Variables, modificables a gusto para ver cual queda mejor
 valorKernel = 7
 
+def rescaleFrame(frame, scale=0.5):         # Funcion para reescalar el frame, funciona para img,videos and live
+    width = int(frame.shape[1] * scale)     # shape[1] es el width
+    height = int(frame.shape[0] * scale)    # shape[0] es el height
+    
+    dimensions = (width, height)
+    
+    return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
     
 
 def buscarMonedas(n_img):
     original = cv.imread(f'monedas-{n_img}.jpg')
+    # resize = rescaleFrame(original)
     gris = cv.cvtColor(original, cv.COLOR_BGR2GRAY) # pasa la imagen original a escala de grises elegida
     gauss = cv.GaussianBlur(gris, (valorGauss, valorGauss), cv.BORDER_DEFAULT)         # reducción de ruido de la imagen
     canny = cv.Canny(gauss, 10, 100)        # Solo los bordes
