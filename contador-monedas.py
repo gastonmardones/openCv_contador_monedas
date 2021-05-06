@@ -1,7 +1,12 @@
 import cv2 as cv
 import numpy as np
+
+
 valorGauss = 5   # Variables, modificables a gusto para ver cual queda mejor
 valorKernel = 7
+
+    
+
 def buscarMonedas(n_img):
     original = cv.imread(f'monedas-{n_img}.jpg')
     gris = cv.cvtColor(original, cv.COLOR_BGR2GRAY) # pasa la imagen original a escala de grises elegida
@@ -10,6 +15,13 @@ def buscarMonedas(n_img):
     dilated = cv.dilate(canny, (5,5), iterations=3)
     kernel = np.ones((valorKernel,valorKernel), np.uint8)
     cierre = cv.morphologyEx(dilated, cv.MORPH_CLOSE, kernel)
+    
+
+    contornos, jerarquia = cv.findContours(cierre, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+    print(f'monedas encontradas:{len(contornos)}')
+    cv.drawContours(original, contornos, -1, (0,0,255), 2)
+    cv.putText(original, f'Contornos encontrados: {len(contornos)}', (50,50), cv.FONT_HERSHEY_SIMPLEX, 0.8, (255,0,0),2)
+
     # cv.imshow('Original', original)
     # cv.imshow('Resultado', resize)
     # cv.imshow('Grises', gris)
@@ -17,6 +29,7 @@ def buscarMonedas(n_img):
     # cv.imshow('Canny', canny)
     # cv.imshow('Dilated', dilated)
     # cv.imshow('Cierre', cierre)
+    cv.imshow('Resultado', original)
     
 
     cv.waitKey(0)
